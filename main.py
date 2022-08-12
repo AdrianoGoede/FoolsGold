@@ -7,11 +7,11 @@ blockchain = Blockchain()
 
 @app.route('/MineBlock', methods=['POST'])
 def new_block():
+    if len(data) == 0:
+        return 'No data supplied!', 400
     previous_nonce = blockchain.last_block()['nonce']
     proof = blockchain.challenge(previous_nonce)
     data = request.data.strip().decode()
-    if len(data) == 0:
-        return 'No data supplied!', 400
     block = blockchain.create_block(proof, data)
     return jsonify(block), 201
 
