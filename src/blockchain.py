@@ -10,20 +10,20 @@ class Blockchain:
         self.chain = []
         self.create_block(nonce = 1)
 
-    def create_block(self, nonce: int, data: str = 'Genesis Block') -> dict:
+    def create_block(self, nonce: int, data: list = None) -> dict:
         block = {'index': len(self.chain), 
                  'nonce': nonce,
                  'timestamp': datetime.datetime.now(),
-                 'data': data,
+                 'data': list.copy(data) if data else [],
                  'previous_hash': self.last_block().get('hash') if len(self.chain) > 0 else ('0' * HASH_SIZE_BYTES)}
         block['hash'] = self.hash_item(block)
         self.chain.append(block)
         return block
 
     def last_block(self) -> dict:
-        return self.chain[-1]if len(self.chain) > 0 else None
+        return self.chain[-1] if len(self.chain) > 0 else None
 
-    def challenge(self, previous_nonce) -> int:
+    def challenge(self, previous_nonce: int) -> int:
         current = 1
         while True:
             operation = self.hash_item((current ** 2) - (previous_nonce ** 2))
