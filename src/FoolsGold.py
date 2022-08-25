@@ -4,7 +4,8 @@ from src.blockchain import Blockchain
 
 class FoolsGoldNode:
 
-    def __init__(self) -> None:
+    def __init__(self, host) -> None:
+        self.address = host
         self.mempool = []
         self.blockchain = Blockchain()
         self.nodes = set()
@@ -29,7 +30,11 @@ class FoolsGoldNode:
 
     def add_node(self, address) -> None:
         parsed_address = urlparse(address)
+        if parsed_address.netloc == self.address or parsed_address.netloc in self.nodes:
+            return
         self.nodes.add(parsed_address.netloc)
+        for node in (addr for addr in self.nodes if addr != parsed_address.netloc):
+            requests.put(f'http://{node}/AddNode', ('{"address":"' + address + '"}'), headers={'Content-Type': 'application/json'})
         
     def replace_chain(self) -> bool:
         was_replaced = False

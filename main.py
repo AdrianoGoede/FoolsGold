@@ -3,8 +3,11 @@ from src.FoolsGold import FoolsGoldNode
 from flask import Flask, jsonify, request;
 from uuid import uuid4 as uuid
 
+HOST = 'localhost'
+PORT = 6666
+
 app = Flask(__name__)
-local_node = FoolsGoldNode()
+local_node = FoolsGoldNode(f'{HOST}:{PORT}')
 
 node_address = str(uuid()).replace('-', '')
 
@@ -57,4 +60,4 @@ def update_chain():
     else:
         return jsonify({'Message': 'The chain is already up to date', 'Size': local_node.blockchain_size()}), 200
 
-app.run('localhost', 6666)
+app.run(HOST, PORT)
